@@ -14,7 +14,7 @@ ESP32C3-Desk-pet/
 ├── README-EN.md                 # Project documentation (English)
 ├── pet-robot-manual.html        # HTML user manual (Chinese)
 ├── pet-robot-manual-EN.html     # HTML user manual (English)
-├── LICENSE                      # MIT open source license
+├── LICENSE                      # GPL v3 open source license
 ├── release/                     # Firmware releases
 │   └── firmware.bin
 ├── ESP32C3-Desk-pet/            # Standard edition (no trial restriction)
@@ -35,7 +35,13 @@ ESP32C3-Desk-pet/
 
 ## Open Source License
 
-This project is open-sourced under the **MIT License**. You are free to use, modify, and distribute the code, but you must retain the original author's copyright notice. If you plan to make substantial modifications or re-release, it is recommended to communicate with me via Issue and obtain permission before proceeding.
+This project is open-sourced under the **GNU General Public License v3 (GPL v3)**. Since this project depends on GPL-licensed open source libraries, under the GPL's "copyleft" clause, derivative works must also be released under the GPL license.
+
+This means:
+- You are free to use, modify, and distribute the code
+- Any modified versions based on this project must also be open-sourced under GPL v3
+- You must retain the original author's copyright notice and provide complete source code when distributing
+- If you plan to make substantial modifications or re-release, it is recommended to communicate with me via Issue first
 
 ---
 

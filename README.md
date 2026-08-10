@@ -14,7 +14,7 @@ ESP32C3-Desk-pet/
 ├── README-EN.md                 # Project Documentation (English)
 ├── pet-robot-manual.html        # HTML 使用手册（中文）
 ├── pet-robot-manual-EN.html     # HTML User Manual (English)
-├── LICENSE                      # MIT 开源协议
+├── LICENSE                      # GPL v3 开源协议
 ├── release/                     # 固件发布
 │   └── firmware.bin
 ├── ESP32C3-Desk-pet/            # 标准版（无试用期）
@@ -35,7 +35,13 @@ ESP32C3-Desk-pet/
 
 ## 开源协议
 
-本项目采用 **MIT 协议** 开源。你可以自由使用、修改、分发本项目代码，但需保留原作者版权声明。如果你计划进行较大幅度的修改或二次发布，建议先通过 Issue 与我沟通，获得许可后再进行。
+本项目采用 **GNU General Public License v3 (GPL v3)** 协议开源。由于本项目依赖了 GPL 协议的开源库，根据 GPL 的"传染性"条款，衍生作品也必须以 GPL 协议发布。
+
+这意味着：
+- 你可以自由使用、修改和分发本项目代码
+- 任何基于本项目的修改版本也必须以 GPL v3 协议开源
+- 分发时需保留原作者版权声明，并提供完整的源代码
+- 如果你计划进行较大幅度的修改或二次发布，建议先通过 Issue 与我沟通
 
 ---
 
