@@ -10,8 +10,10 @@ Pet Robot 是一款基于 ESP32-C3 的桌面电子宠物。它通过 OLED 屏幕
 
 ```
 ESP32C3-Desk-pet/
-├── README.md                    # 项目说明文档
-├── pet-robot-manual.html        # HTML 使用手册
+├── README.md                    # 项目说明文档（中文）
+├── README-EN.md                 # Project Documentation (English)
+├── pet-robot-manual.html        # HTML 使用手册（中文）
+├── pet-robot-manual-EN.html     # HTML User Manual (English)
 ├── LICENSE                      # MIT 开源协议
 ├── release/                     # 固件发布
 │   └── firmware.bin
