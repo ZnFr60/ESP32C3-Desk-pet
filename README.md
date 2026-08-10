@@ -1,3 +1,13 @@
+## About Me
+
+Hi! I'm a 16-year-old high school student from China. I'm passionate about embedded systems and hardware development. This is my open-source project — welcome to star or fork!
+
+## About This Project
+
+Pet Robot 是一款基于 ESP32-C3 的桌面电子宠物。它通过 OLED 屏幕显示灵动的大眼睛，搭载 MPU6050 陀螺仪实现运动感知，拥有 23 种表情、19 种活动动画、心情系统与多层省电策略，支持 WiFi 对时和 Web 配置。
+
+---
+
 # Pet Robot — ESP32-C3 桌面电子宠物
 
 > **Firmware Version 1.0 · Low Power Edition**  
