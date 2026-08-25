@@ -1,0 +1,42 @@
+idf_component_register(
+    SRCS
+        "app_main.cpp"
+        "esp32-pet-robot-arduino.cpp"
+        "compat/compat_impl.cpp"
+        "lib/gfx/Adafruit_GFX.cpp"
+        "lib/gfx/glcdfont.c"
+        "lib/ssd1306/Adafruit_SSD1306.cpp"
+        "lib/busio/Adafruit_BusIO_Register.cpp"
+        "lib/busio/Adafruit_GenericDevice.cpp"
+        "lib/busio/Adafruit_I2CDevice.cpp"
+        "lib/busio/Adafruit_SPIDevice.cpp"
+        "lib/sensor/Adafruit_Sensor.cpp"
+        "lib/mpu6050/Adafruit_MPU6050.cpp"
+    INCLUDE_DIRS
+        "."
+        "compat"
+        "lib/gfx"
+        "lib/ssd1306"
+        "lib/busio"
+        "lib/sensor"
+        "lib/mpu6050"
+    REQUIRES
+        esp_hw_support
+        esp_system
+        esp_common
+        nvs_flash
+        esp_wifi
+        esp_netif
+        esp_event
+        esp_http_server
+        esp_timer
+        driver
+        lwip
+)
+
+# Ensure the Arduino-style build markers are set for every source.
+target_compile_definitions(${COMPONENT_LIB} PRIVATE
+    ESP32
+    ESP32C3
+    ARDUINO=10607
+)

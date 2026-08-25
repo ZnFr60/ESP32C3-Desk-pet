@@ -1,0 +1,18 @@
+# ESP-IDF build artifacts
+build/
+sdkconfig
+sdkconfig.old
+sdkconfig.defaults.bak
+dependencies.lock
+managed_components/
+*.pyc
+
+# temp/tool files
+capture_*.py
+boot_check.log
+setup_net.ps1
+hosts.backup
+
+# OS
+.DS_Store
+Thumbs.db

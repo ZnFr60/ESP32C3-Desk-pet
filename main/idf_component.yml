@@ -1,0 +1,6 @@
+## ESP-IDF component manifest
+## The Arduino-ESP32 dependency has been removed: all Arduino APIs are now
+## provided by the local ESP-IDF native compat layer (main/compat/).
+dependencies:
+  idf:
+    version: ">=5.0.0"

@@ -1,0 +1,13 @@
+# ESP32-C3 target for the pet-robot firmware
+CONFIG_IDF_TARGET="esp32c3"
+
+# 4 MB flash (ESP32-C3 dev boards commonly ship 4 MB)
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+
+# Default single-app partition layout is fine for this firmware
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
+
+# Keep the console on UART0 so Serial logging works out of the box
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+# Avoid GCC-12+ new warnings being promoted to errors
+CONFIG_COMPILER_DISABLE_GCC12_WARNINGS=y
