@@ -1,111 +1,111 @@
-# ESP32C3 Desk-pet（重构迭代版）
+# ESP32C3 Desk-pet (Reconstructed Iterative Build)
 
-一款基于 ESP32-C3 的桌面电子宠物机器人。通过 OLED 屏幕显示灵动大眼睛，搭载 MPU6050 实现运动感知，具备表情系统、活动动画、心情系统与多层省电策略，支持 WiFi 校时与 Web 配置。
+A desktop virtual-pet robot based on the ESP32-C3. It renders lively robot eyes on an OLED, uses an MPU6050 for motion sensing, and features an expression system, activity animations, a mood system, and multi-layer power saving, plus WiFi time sync and web-based provisioning.
 
-> **当前版本为「重构迭代版」**：已将原 Arduino 框架工程完整迁移到 **ESP-IDF 原生框架**（禁用 Arduino-ESP32 组件），并在实机上验证运行正常（OLED 显示、MPU6050 检测、I2C 扫描、系统稳定运行）。
+> **This is the "reconstructed iterative build"**: the original Arduino-framework project has been fully migrated to the **native ESP-IDF framework** (no Arduino-ESP32 component), and verified on real hardware (OLED display, MPU6050 sensing, I2C scan, stable system operation).
 
 ---
 
-## 目录
+## Layout
 
 ```
 ESP32C3-Desk-pet/
-├── CMakeLists.txt          # ESP-IDF 顶层工程文件
-├── sdkconfig.defaults      # 关键配置（esp32c3 / 4MB Flash / USB 控制台）
+├── CMakeLists.txt          # ESP-IDF top-level project file
+├── sdkconfig.defaults      # Key config (esp32c3 / 4MB Flash / USB console)
 ├── main/
-│   ├── app_main.cpp        # IDF 入口（NVS 初始化 + setup()/loop()）
-│   ├── esp32-pet-robot-arduino.cpp  # 业务主程序（屏幕/运动/按键/时间/WiFi 逻辑）
-│   ├── Config.h            # 引脚、屏幕、运动、心情等全部宏配置
-│   ├── RoboEyesManager.h   # 表情/活动状态机
-│   ├── WiFiManager.h       # WiFi 自动连接 + AP 配网 Web 服务器
-│   ├── TimeManager.h       # RTC 时间管理 + NTP 同步
-│   ├── FluxGarage_RoboEyes.h      # 大眼睛动画绘制（模板）
-│   ├── compat/             # Arduino API → ESP-IDF 原生接口适配层（自研）
-│   └── lib/                # Adafruit GFX/SSD1306/MPU6050/Sensor/BusIO 驱动
-└── legacy_broken_code/     # 早期旧代码归档（仅软件测试、实物不可运行）
+│   ├── app_main.cpp        # IDF entry (NVS init + setup()/loop())
+│   ├── esp32-pet-robot-arduino.cpp  # Main business logic (display/motion/button/time/WiFi)
+│   ├── Config.h            # All macros: pins, display, motion, mood, etc.
+│   ├── RoboEyesManager.h   # Expression/activity state machine
+│   ├── WiFiManager.h       # WiFi auto-connect + AP provisioning web server
+│   ├── TimeManager.h       # RTC time keeping + NTP sync
+│   ├── FluxGarage_RoboEyes.h      # Animated eyes drawing (template)
+│   ├── compat/             # Arduino API → native ESP-IDF adapter layer (own code)
+│   └── lib/                # Adafruit GFX/SSD1306/MPU6050/Sensor/BusIO drivers
+└── legacy_broken_code/     # Archived early code (software-tested only, not runnable on hardware)
 ```
 
-## 硬件清单
+## Hardware
 
-| 器件 | 型号/规格 |
+| Part | Model/Spec |
 |---|---|
-| 主控 | ESP32-C3（4MB Flash，原生 USB-Serial-JTAG） |
-| 屏幕 | SSD1306 OLED，128×64，I2C 接口 |
-| 传感器 | MPU6050 六轴（加速度+陀螺仪），I2C 接口 |
-| 按键 | 板载 BOOT 按键（GPIO9，低电平有效） |
+| MCU | ESP32-C3 (4MB Flash, native USB-Serial-JTAG) |
+| Display | SSD1306 OLED, 128×64, I2C |
+| Sensor | MPU6050 6-axis (accel+gyro), I2C |
+| Button | On-board BOOT button (GPIO9, active low) |
 
-## 引脚接线表
+## Pin Wiring
 
-| 功能 | 引脚 | 说明 |
+| Function | Pin | Note |
 |---|---|---|
-| I2C 数据线 SDA | GPIO3 | SSD1306 与 MPU6050 共用 |
-| I2C 时钟线 SCL | GPIO4 | 同上 |
-| OLED 复位 RST | GPIO5 | 低电平有效，主动复位（修复黑屏关键） |
-| BOOT 按键 | GPIO9 | 单/双/三连/长按交互 |
-| 板载 LED | GPIO8 | OLED 异常时闪烁提示 |
+| I2C SDA | GPIO3 | Shared by SSD1306 and MPU6050 |
+| I2C SCL | GPIO4 | Same |
+| OLED RST | GPIO5 | Active low, driven actively (key fix for black screen) |
+| BOOT button | GPIO9 | Single/double/triple/long press |
+| On-board LED | GPIO8 | Blinks when OLED fails |
 
-> 引脚均可在 `main/Config.h` 中调整。I2C 总线启用内部上拉。
+> All pins are adjustable in `main/Config.h`. Internal pull-ups are enabled on the I2C bus.
 
-## ESP-IDF 环境版本
+## ESP-IDF Environment
 
-- **ESP-IDF v5.3.1**（本工程基于 5.3 验证编译）
-- 目标芯片：`esp32c3`
+- **ESP-IDF v5.3.1** (verified build on 5.3)
+- Target chip: `esp32c3`
 
-## 编译与烧录
+## Build & Flash
 
 ```bash
-# 1. 进入工程并加载 IDF 环境
+# 1. cd into the project and source the IDF environment
 cd ESP32C3-Desk-pet
 
-# 2. 设定目标芯片（首次）
+# 2. Set the target chip (first time)
 idf.py set-target esp32c3
 
-# 3. 编译
+# 3. Build
 idf.py build
 
-# 4. 烧录 + 串口监视（COMx 为实际端口）
+# 4. Flash + monitor (COMx = your port)
 idf.py -p COMx flash monitor
 ```
 
-- 本机采用 **原生 USB-Serial-JTAG** 控制台，`Serial` 日志直接输出到 USB 虚拟串口（115200）。
-- 上电后串口会打印 I2C 总线扫描、OLED/MPU 检测、系统就绪等日志，用于定位硬件问题。
+- This board uses the **native USB-Serial-JTAG** console, so `Serial` logs go straight to the USB virtual COM port (115200).
+- On power-up the serial prints the I2C scan, OLED/MPU detection, and "system ready" logs for hardware troubleshooting.
 
-## 功能特性
+## Features
 
-- **表情系统**：23+ 种表情（开心、惊讶、困倦、生气、疼痛、眩晕、思考、发呆等）。
-- **活动动画**：9+ 种活动（喝水、阅读、吃饭、跳舞、绘画、玩游戏、运动等）。
-- **运动感知**：跌落（疼痛）、摇晃（眩晕）、弹击（生气）、左右倾（眼睛看方向）、计步、单击/双击敲击。
-- **心情系统**：随交互增加、随时间衰减（0–100）。
-- **交互方式**：单击=抚摸、双击=自定义动作、三连按=AP 配网、长按 3s=关机（RTC 保持）。
-- **省电策略**：自动变暗、空闲休眠、深睡（BOOT 唤醒）。
-- **WiFi 校时**：首次上电/午夜自动联网 NTP 校时，校时后断开 WiFi 省电，由 RTC 维持时间。
-- **Web 配网**：三连按进入 AP 模式（`PetRobot-Setup`，`192.168.4.1`），可配置 WiFi 与显示/运动参数（NVS 持久化）。
+- **Expressions**: 23+ (happy, surprised, sleepy, angry, pain, dizzy, thinking, bored, ...).
+- **Activities**: 9+ (drinking, reading, eating, dancing, drawing, gaming, exercising, ...).
+- **Motion sensing**: drop (pain), shake (dizzy), flick (angry), left/right tilt (eyes look that way), step counting, single/double tap.
+- **Mood system**: grows with interaction, decays over time (0–100).
+- **Interactions**: single press = petting, double press = custom action, triple press = AP provisioning, long press 3s = shutdown (RTC keeps time).
+- **Power saving**: auto-dim, idle sleep, deep sleep (wake by BOOT).
+- **WiFi time sync**: on first power-up / at midnight it auto-connects and NTP-syncs, then disconnects to save power (RTC keeps time).
+- **Web provisioning**: triple-press enters AP mode (`PetRobot-Setup`, `192.168.4.1`) to configure WiFi and display/motion settings (persisted in NVS).
 
-## 模块划分（重构说明）
+## Module Split (reconstruction notes)
 
-- `main/compat/`：**Arduino API 适配层**，用 ESP-IDF 原生接口封装 `digitalWrite/pinMode/Serial/Wire/WiFi/Preferences/WebServer/String/PROGMEM` 等（`driver/gpio`、`driver/i2c`、UART 控制台、`esp_wifi`、`esp_http_server`、`nvs_flash`、`esp_timer`、`esp_sntp`）。
-- `main/lib/`：Adafruit 第三方驱动（GFX/SSD1306/MPU6050/Sensor/BusIO），已内置于工程本地。
-- `main/*.h` + `*.cpp`：业务逻辑（驱动、屏幕 UI、业务逻辑分离）。
+- `main/compat/`: **Arduino API adapter layer** that wraps `digitalWrite/pinMode/Serial/Wire/WiFi/Preferences/WebServer/String/PROGMEM` with native ESP-IDF APIs (`driver/gpio`, `driver/i2c`, UART console, `esp_wifi`, `esp_http_server`, `nvs_flash`, `esp_timer`, `esp_sntp`).
+- `main/lib/`: Adafruit third-party drivers (GFX/SSD1306/MPU6050/Sensor/BusIO), bundled locally.
+- `main/*.h` + `*.cpp`: business logic (drivers, UI, business logic kept separate).
 
-## legacy_broken_code 说明
+## legacy_broken_code
 
-`legacy_broken_code/` 存放**早期旧代码归档**（原 Arduino 框架、试用版等）。这些代码**仅做过软件层面的编译测试，未在实物硬件上验证运行，无法在实机正常启动**（存在屏幕不显示等硬件故障），仅作为历史存档保留，不属于当前可运行的工程。当前可运行版本为仓库根目录的 ESP-IDF 工程。
+`legacy_broken_code/` holds the **archived early code** (original Arduino framework, trial build, etc.). That code was **only software/compile-tested and never validated on real hardware; it cannot boot correctly on the actual device** (e.g. the black-screen display issue). It is kept purely as a historical archive and is not part of the runnable project. The runnable build is the ESP-IDF project at the repository root.
 
-## 开源协议与第三方依赖许可
+## License & Third-Party Notices
 
-- **本项目**：遵循 **GPL v3**（GNU General Public License v3.0），详见 `LICENSE`。
-- **Adafruit GFX / SSD1306 / MPU6050 / Sensor / BusIO**：BSD 许可证（Adafruit Industries）。
-- **FluxGarage RoboEyes**：GPL v3（www.fluxgarage.com）。
-- `main/compat/` 自研适配层与业务源码：GPL v3。
+- **This project**: **GPL v3** (GNU General Public License v3.0), see `LICENSE`.
+- **Adafruit GFX / SSD1306 / MPU6050 / Sensor / BusIO**: BSD license (Adafruit Industries).
+- **FluxGarage RoboEyes**: GPL v3 (www.fluxgarage.com).
+- `main/compat/` adapter layer and business source: GPL v3.
 
-## 项目已知限制
+## Known Limitations
 
-- `setCpuFrequencyMhz()` 为**空实现**（未启用 ESP-PM 动态调频），功能不受影响，仅略去激进省电档。
-- I2C 驱动使用 legacy `driver/i2c.h`（已在 5.x 标记为 deprecated，建议后续迁移 `i2c_master` 新驱动）。
-- WiFi/NTP 校时需联网且首次需经 AP 配网；校时失败则从 00:00 开始计数（RTC 维持）。
-- 运动/敲击/按键类交互需**实物操作**触发，无法纯软件模拟验证。
-- `Config.h` 中引脚为默认接线，若实际硬件接线不同请按表调整。
+- `setCpuFrequencyMhz()` is a **no-op** (ESP-PM dynamic frequency scaling not enabled); functionality is unaffected, only the aggressive power-saving tier is skipped.
+- I2C uses the legacy `driver/i2c.h` (deprecated in 5.x; migration to the `i2c_master` driver is recommended).
+- WiFi/NTP sync requires a network and initial AP provisioning; if sync fails the RTC starts from 00:00.
+- Motion/tap/button interactions require **physical operation** and cannot be verified purely in software.
+- Pins in `Config.h` are the default wiring; adjust them if your hardware differs.
 
-## 许可与说明
+## License
 
-本项目仅供学习交流。使用、修改、再分发请遵守 GPL v3 与各第三方库的许可条款。
+For learning and exchange only. Use, modification and redistribution must comply with GPL v3 and the licenses of the third-party libraries.
