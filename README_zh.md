@@ -70,6 +70,33 @@ idf.py -p COMx flash monitor
 - 本机采用 **原生 USB-Serial-JTAG** 控制台，`Serial` 日志直接输出到 USB 虚拟串口（115200）。
 - 上电后串口会打印 I2C 总线扫描、OLED/MPU 检测、系统就绪等日志，用于定位硬件问题。
 
+## 下载与编译（ZIP 包）
+
+提供可直接用 ESP-IDF 编译的源码包：
+
+- **`release/ESP32C3-Desk-pet.zip`** — 完整 ESP-IDF 工程（标准结构）。下载解压后即可编译：
+
+```bash
+# 1. 解压 ESP32C3-Desk-pet.zip
+# 2. 进入解压目录（先加载 ESP-IDF 环境，Windows 下如：./export.ps1）
+cd ESP32C3-Desk-pet
+
+# 3. 设定目标芯片（首次）
+idf.py set-target esp32c3
+
+# 4. 编译
+idf.py build
+
+# 5. 烧录 + 监视（COMx 为实际端口）
+idf.py -p COMx flash monitor
+```
+
+- **`release/firmware.bin`** — 预编译的应用固件（ESP32-C3，4MB Flash）。可用 esptool 直接烧录：
+
+```bash
+python -m esptool --chip esp32c3 write_flash 0x0 release/bootloader.bin 0x8000 release/partition-table.bin 0x10000 release/firmware.bin
+```
+
 ## 功能特性
 
 - **表情系统**：23+ 种表情（开心、惊讶、困倦、生气、疼痛、眩晕、思考、发呆等）。

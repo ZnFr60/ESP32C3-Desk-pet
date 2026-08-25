@@ -70,6 +70,33 @@ idf.py -p COMx flash monitor
 - This board uses the **native USB-Serial-JTAG** console, so `Serial` logs go straight to the USB virtual COM port (115200).
 - On power-up the serial prints the I2C scan, OLED/MPU detection, and "system ready" logs for hardware troubleshooting.
 
+## Download & Build from Source (ZIP)
+
+A ready-to-build source package is provided so you can compile directly with ESP-IDF:
+
+- **`release/ESP32C3-Desk-pet.zip`** — the complete ESP-IDF project (standard structure). Download, extract, then build:
+
+```bash
+# 1. Extract ESP32C3-Desk-pet.zip
+# 2. cd into the extracted folder (source the ESP-IDF env first, e.g. on Windows: ./export.ps1)
+cd ESP32C3-Desk-pet
+
+# 3. Set the target chip (first time)
+idf.py set-target esp32c3
+
+# 4. Build
+idf.py build
+
+# 5. Flash + monitor (COMx = your port)
+idf.py -p COMx flash monitor
+```
+
+- **`release/firmware.bin`** — pre-built application firmware (ESP32-C3, 4MB flash). Flash it directly with esptool:
+
+```bash
+python -m esptool --chip esp32c3 write_flash 0x0 release/bootloader.bin 0x8000 release/partition-table.bin 0x10000 release/firmware.bin
+```
+
 ## Features
 
 - **Expressions**: 23+ (happy, surprised, sleepy, angry, pain, dizzy, thinking, bored, ...).
